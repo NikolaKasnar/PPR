@@ -1,0 +1,69 @@
+1.
+Pri paralelizaciji prve faze algoritma(svođenje na gornjetrokutastu matricu) sa shared() označavamo koji su resursi dijeljeni izmedu dretvi.
+Sa schedule() označimo dynamic raspodjelu posla, svaka dretva dobije neki dio posla te kad završi dobije još. Razlog je taj što je matrica
+ dijagonalno dominantna pa nebi baš bilo fer da neka dretva dobije manje posla. U ovom slučaju ako neka dretva ima manje posla, ranije će
+ završiti te će odraditi joše neki dio posla.
+
+Pri paralelziaciji druge faze algoritma(rješavanje gornjetrokutastog sustava) shared() ima istu funkciju kao i u prošloj petlji, a schedule()
+ je ovaj put static, tj. svaka dretva odmah na početku dobije istu količinu posla(redova). Time podijelimo posao ravnomjerno na sve dretve, a
+ to nam ne utječe toliko kao u prvoj fazi jer će sve dretve dobiti otrpilike istu količinu posla. Tj. to neznamo ali u prvoj fazi smo sigurni
+ da će neke dretve imati manje posla s obzirom da je matrica dijagonalno dominantna, dok to ovdje neznamo.
+
+2.
+Ubrzanja koja postižem na 2 procesora:
+-matrica reda 200:
+    a)sekvencijalno: 7 ms
+    b)paralelno: 4 ms
+        -UBRZANJE: 3 ms
+-matrica reda 500:
+    a)sekvencijalno: 117 ms
+    b)paralelno: 66 ms
+        -UBRZANJE: 51 ms
+-matrica reda 1000:
+    a)sekvencijalno: 993 ms
+    b)paralelno: 529 ms
+        -UBRZANJE: 464 ms
+-matrica reda 1500:
+    a)sekvencijalno: 3411 ms
+    b)paralelno: 1739 ms
+        -UBRZANJE: 1672 ms
+-matrica reda 2000:
+    a)sekvencijalno: 7721 ms
+    b)paralelno: 4340 ms
+        -UBRZANJE: 3381 ms
+
+Ubrzanja koja postižem na 4 procesora:
+-matrica reda 200:
+    a)sekvencijalno: 7 ms
+    b)paralelno: 2 ms
+        -UBRZANJE: 5 ms
+-matrica reda 500:
+    a)sekvencijalno: 117 ms
+    b)paralelno: 46 ms
+        -UBRZANJE: 71 ms
+-matrica reda 1000:
+    a)sekvencijalno: 993 ms
+    b)paralelno: 282 ms
+        -UBRZANJE: 711 ms
+-matrica reda 1500:
+    a)sekvencijalno: 3411 ms
+    b)paralelno: 914 ms
+        -UBRZANJE: 2497 ms
+-matrica reda 2000:
+    a)sekvencijalno: 7721 ms
+    b)paralelno: 2231 ms
+        -UBRZANJE: 5490 ms
+
+3.
+U prvoj fazi(svođenje na gornji trokut) sam odabrao paralelizirati vanjsku petlju zbog nezavisnosti iteracija. U svakoj iteraciji vanjske
+ petlje, operacije koje se izvode na različitim redovima matrice neovisne su jedna o drugoj. To znači da izračun za jedan red ne ovisi o
+ rezultatima izračuna za drugi red. Stoga se višestruke iteracije vanjske petlje mogu istovremeno izvoditi od strane različitih niti bez
+ međusobnog ometanja.
+
+U drugoj fazi sam paralelizirao unutarnju petlju iz sličnih razloga kao i ranije, nezavisnost računanja. Svaka iteracija računa komponentu
+ vektora b te su zbog toga ta računanja nezavisna.
+
+4.
+Paralelizacijom dijela algoritma koji riješava sustav dobijemo veliko ubrzanje, zato što time iskorištavamo više procesora računala. Umjesto
+ da jedan procesor rješava cijeli sustav red po red, ovako možemo podijeliti posao na redimo dva procesora(detve), gdje svaka dretva rješava
+ pola matrice. Gledajući gornje rezultate to nam praktički skoro dvostruko smanji vrijeme izvršavanja.
