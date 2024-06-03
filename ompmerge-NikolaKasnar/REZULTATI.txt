@@ -1,0 +1,91 @@
+MJERENJA(napravljena prije nego sam dodao odredbu final i mergable, makar su rezultati jednaki kasnije)
+Testiranja sam radio tako da sam zakomentirao sve linije koda sa omp naredbama, tada bi se program izvršio sekvencijalno, te nakon toga
+ odkomentirao te bi se tada program izvršio paralelno.
+Za treshold sam uzeo duljinu niza od 1000 elemenata. Za manje od toga se program izvršava sekvencijalno. Manje od toga se baš i ne osjete
+ poboljšanja, a za više od toga sam uzimao tresholde 2000, 3000, 4000 i 5000, te se pokazalo da u slučaju treshold=1000 dobijem najbolje rezultate.
+Pošto nije navedeno, mjerenja su izvršena na defaultnom broju procesora, tj. 8 procesora.
+
+Ovo su moji rezultati sa 8 procesora i treshold=1000:
+
+N=1500
+-sekvencijalno: 0.000241862 sec
+-paralelno: 0.000562551 sec
+-UBRZANJE: 0.4299
+
+N=2000
+-sekvencijalno: 0.000437432 sec
+-paralelno: 0.000721363 sec
+-UBRZANJE: 0.6064
+
+N=5000
+-sekvencijalno: 0.000889156 sec
+-paralelno: 0.000721363 sec
+-UBRZANJE: 1.2326
+
+N=10000
+-sekvencijalno: 0.00174189 sec
+-paralelno: 0.00124286 sec
+-UBRZANJE: 1.4015
+
+N=25000
+-sekvencijalno: 0.00450629 sec
+-paralelno: 0.001971 sec
+-UBRZANJE: 2.2862
+
+N=50000
+-sekvencijalno: 0.00923393 sec
+-paralelno: 0.0034603 sec
+-UBRZANJE: 2.6685
+
+N=100000
+-sekvencijalno: 0.0189689 sec
+-paralelno: 0.00697911 sec
+-UBRZANJE: 0.4299
+
+N=250000
+-sekvencijalno: 0.0497911 sec
+-paralelno: 0.0162785 sec
+-UBRZANJE: 2.718
+
+N=500000
+-sekvencijalno: 0.099868 sec
+-paralelno: 0.032211 sec
+-UBRZANJE: 3.1004
+
+N=1000000
+-sekvencijalno: 0.205548 sec
+-paralelno: 0.0528185 sec
+-UBRZANJE: 3.8916
+
+N=5000000
+-sekvencijalno: 1.08502 sec
+-paralelno: 0.270058 sec
+-UBRZANJE: 4.0177
+
+N=10000000
+-sekvencijalno: 2.19744 sec
+-paralelno: 0.505943 sec
+-UBRZANJE: 4.3432
+
+N=50000000
+-sekvencijalno: 11.4085 sec
+-paralelno: 3.40757 sec
+-UBRZANJE: 3.348
+
+N=100000000
+-sekvencijalno: 23.4278 sec
+-paralelno: 6.42675 sec
+-UBRZANJE: 3.6454
+
+N=500000000
+-sekvencijalno: 122.401 sec
+-paralelno: 34.0394 sec
+-UBRZANJE: 3.5959
+
+
+Možemo primjetiti da je na manjim veličinama niza čak brži i sekvencijalni merge sort, te se tek negdje oko duljine N=5000 počinje osjećati
+ razlika. I ona je donekle upitna jer sam morao pokrenuti paralelni program više puta da dobijem brži rezultat. Paralelni algoritam je u tom
+ rangu nizova dosta odskakao dok je sekvencijalni imao dosta stabilno vrijeme. Nakon toga razlika između sekvencijalnog i paralelnog
+ algoritma dosta raste te je na veličini od N=500000000 skoro 100 sekundi. Najveće ubrzanje se događa oko N=10000000 dok se nakon toga
+ stabilizira oko 3.5.
+
